@@ -1,11 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function SignupPage() {
+function SignupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const ref = searchParams.get("ref");
@@ -64,12 +63,11 @@ export default function SignupPage() {
       });
 
       if (result?.error) {
-        setError("Account created but sign in failed. Please try logging in.");
+        setError("Account created but sign-in failed. Please try logging in.");
         setLoading(false);
         return;
       }
 
-      // Redirect to home or account page
       router.push("/account");
     } catch (err) {
       setError("Something went wrong. Please try again.");
@@ -80,7 +78,9 @@ export default function SignupPage() {
   return (
     <div className="max-w-md mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Create account</h1>
-      <p className="text-gray-400 mb-6">Join the constellation and start earning points.</p>
+      <p className="text-gray-400 mb-6">
+        Join the constellation and start earning points.
+      </p>
 
       {!showPasswordForm ? (
         <div className="flex flex-col gap-3">
@@ -116,7 +116,9 @@ export default function SignupPage() {
               type="text"
               required
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               className="w-full px-4 py-2 bg-[#0f141b] rounded-lg text-white border border-gray-700 focus:border-primary focus:outline-none"
               placeholder="Your name"
             />
@@ -128,7 +130,9 @@ export default function SignupPage() {
               type="email"
               required
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               className="w-full px-4 py-2 bg-[#0f141b] rounded-lg text-white border border-gray-700 focus:border-primary focus:outline-none"
               placeholder="your@email.com"
             />
@@ -140,7 +144,9 @@ export default function SignupPage() {
               type="password"
               required
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
               className="w-full px-4 py-2 bg-[#0f141b] rounded-lg text-white border border-gray-700 focus:border-primary focus:outline-none"
               placeholder="At least 6 characters"
               minLength={6}
@@ -148,22 +154,22 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="block text-sm text-gray-400 mb-1">Confirm Password</label>
+            <label className="block text-sm text-gray-400 mb-1">
+              Confirm Password
+            </label>
             <input
               type="password"
               required
               value={formData.confirmPassword}
-              onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
               className="w-full px-4 py-2 bg-[#0f141b] rounded-lg text-white border border-gray-700 focus:border-primary focus:outline-none"
               placeholder="Confirm your password"
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn w-full"
-          >
+          <button type="submit" disabled={loading} className="btn w-full">
             {loading ? "Creating account..." : "Create Account"}
           </button>
 
@@ -178,7 +184,10 @@ export default function SignupPage() {
       )}
 
       <p className="text-gray-400 mt-4 text-center">
-        Already have an account? <Link href="/login" className="underline">Sign in</Link>
+        Already have an account?{" "}
+        <Link href="/login" className="underline">
+          Sign in
+        </Link>
       </p>
       {ref && (
         <p className="text-sm text-primary mt-2 text-center">
@@ -189,3 +198,10 @@ export default function SignupPage() {
   );
 }
 
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div>Loading signup...</div>}>
+      <SignupContent />
+    </Suspense>
+  );
+}
