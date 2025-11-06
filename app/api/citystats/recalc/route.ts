@@ -4,7 +4,7 @@ import { updateCityStats } from "@/lib/map";
 
 export async function POST(req: Request) {
   // Secure cron endpoint - check for secret header
-  const secret = headers().get("x-cron-secret");
+  const secret = (await headers()).get("x-cron-secret");
   if (secret !== process.env.CRON_SECRET) {
     return new Response("Unauthorized", { status: 401 });
   }
