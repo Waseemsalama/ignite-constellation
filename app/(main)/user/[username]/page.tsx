@@ -1,18 +1,17 @@
 // app/(main)/user/[username]/page.tsx
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma"; // optional, only if you use Prisma
+import { prisma } from "@/lib/prisma"; // optional if you use Prisma
 
-// 👇 Rename this type to avoid conflict with Next.js internal PageProps
-type UserPageParams = {
-  params: {
-    username: string;
-  };
-};
+// ✅ Notice that params is now wrapped in a Promise
+export default async function UserPage({
+  params,
+}: {
+  params: Promise<{ username: string }>;
+}) {
+  // Unwrap the params Promise
+  const { username } = await params;
 
-export default async function UserPage({ params }: UserPageParams) {
-  const { username } = params;
-
-  // Optional: load user from DB
+  // Optional: load user data from database
   // const user = await prisma.user.findUnique({ where: { username } });
   // if (!user) return notFound();
 
